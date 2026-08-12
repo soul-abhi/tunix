@@ -11,15 +11,19 @@ let music;
 //        thumbnail.contents[0].url (array of {url,width,height})
 async function handleSearch(query) {
   const results = await music.search(query);
-  return results.results.slice(0 , 10 ).map((video) =>({
-  	id: video.video_id,
-  	title: video.title?.text , 
-  	artists: [video.author?.name] , 
-  	duration : video.duration , 
-  	thumbnail : video.thumbnails?.[video.thumbnails.length -1]?.url , 
-  	published: video.published?.text,
-  	views: video.view_count?.text,
-  }));
+  return results.videos
+        .slice(0, 10)
+        .map((video) => ({
+            id: video.video_id,
+            title: video.title?.text ?? "",
+            artists: video.author?.name
+                ? [video.author.name]
+                : [],
+            duration: video.duration?.text ?? null,
+            thumbnail: video.thumbnails?.at(-1)?.url ?? null,
+            published: video.published?.text ?? null,
+            views: video.view_count?.text ?? null,
+        }));
 }
 
 async function start() {

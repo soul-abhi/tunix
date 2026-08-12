@@ -19,11 +19,29 @@ and explains.
 - "Classic" player, no fancy UI, no auth of any kind
 - Rule agreed: no emojis anywhere in this session, project, or docs
 
+## Lesson Plan (mentor -> learner)
+
+Progress levels: [x] done, [ ] todo
+
+1. [x] Lesson 1 - Scaffold Expo app (npm install gotcha: same-step reminder)
+2. [x] Lesson 2 - Run app on phone via Expo Go; clean template demo code
+3. [x] Lesson 3 - Node server part 1: hello-world HTTP server + curl test
+4. [x] Lesson 4 - Server search endpoint (youtubei.js v17 API debugging)
+5. [x] Lesson 5 - Phone app API layer + search screen design (NOT yet written in code)
+6. [x] Lesson 6 - YouTube-WIDE search (remixes/slowed/reverb) + field mapping fix
+7. [ ] Lesson 7 - Working stream URL extraction (BLOCKED: parser drops url/cipher)
+8. [ ] Lesson 8 - App: search screen final (TextInput + FlatList)
+9. [ ] Lesson 9 - Dev build + react-native-track-player install
+10. [ ] Lesson 10 - Playback service: queue, play/pause/seek, TrackPlayer events
+11. [ ] Lesson 11 - Background playback + lock screen controls + media notification
+12. [ ] Lesson 12 - Player UI: mini-player + now-playing screen
+13. [ ] Lesson 13 - Favorites / history persistence (MMKV)
+
 ## Milestones
 
 1. [x] Scaffold Expo app and run it on the phone (Expo Go)
-2. [ ] Build `server/` Node HTTP API with a working YT search endpoint
-3. [ ] App API layer + search screen with result list
+2. [x] Build `server/` Node HTTP API with a working YT search endpoint
+3. [ ] App API layer + search screen with result list  (api.ts + index.tsx written by learner)
 4. [ ] Dev build + react-native-track-player install
 5. [ ] Playback service: queue, play/pause/seek, TrackPlayer events
 6. [ ] Background playback + lock screen controls + media notification
@@ -42,15 +60,24 @@ and explains.
 - Removed template demo code (components/hooks/constants/scripts) and kept a minimal
   app/_layout.tsx + app/index.tsx.
 - Confirmed: no auth in the app.
-- Next: Lesson 3 - build the Node YT extraction server.
 
 ### Session 3 - 2026-08-09
 - Built server/index.js: Node HTTP server, routes /ping, /search?q=.
-- Debugged youtubei.js v17 API changes (Innertube.create, music.search, nested
-  MusicShelf result shape, duration object, thumbnail.contents path). Endpoint
-  now returns real songs from YouTube.
-- Milestone 2 complete: server search works (tested with curl).
-- Next: Lesson 5 - phone search screen calling this server (fetch).
+- Debugged youtubei.js v17 API changes. Endpoint returned official-catalog songs only.
+- Fixed to YouTube-WIDE search (videos incl. remixes/slowed/reverb) at /search.
+- Fixed searched-field mapping (duration/thumbnail keys).
+- Milestone 2 complete: server search works (verified via curl).
+- Known blocker (Lesson 7): playing a video needs a direct stream URL; youtubei.js v17
+  parsed Format objects expose url/signature_cipher/cipher as undefined even though the
+  raw API response contains them. Next server task.
+
+## Bugs / notes tracking
+
+- EADDRINUSE: old `node index.js` kept port 8080 - kill with `lsof -ti:8080 | xargs kill -9`
+- Search results "videos" now come from `results.videos`, NOT `results.results`.
+  (learner code uses results.videos; verified - works)
+- `duration` is `video.duration?.text` (e.g. "5:28") - string, not seconds.
+  Keep as display string for now; may need seconds for TrackPlayer later.
 
 ## Mentor Workflow
 
